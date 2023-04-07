@@ -1,0 +1,20 @@
+{
+  "name": "deterministic-electron-forge-zip-maker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/maker.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@electron-forge/maker-base": "^6.1.1",
+    "@electron-forge/shared-types": "^6.1.1",
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
