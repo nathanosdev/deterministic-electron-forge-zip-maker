@@ -1,6 +1,6 @@
 {
   "name": "deterministic-electron-forge-zip-maker",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/maker.js",
   "scripts": {
