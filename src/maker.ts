@@ -7,15 +7,19 @@ import { DeterministicZipMakerConfig } from './config';
 import { createZip } from './create-zip';
 
 export default class DeterministicZipMaker extends MakerBase<DeterministicZipMakerConfig> {
-  name = 'zip';
+  public readonly name = 'deterministic-zip';
+  public readonly defaultPlatforms: ForgePlatform[] = [
+    'darwin',
+    'mas',
+    'win32',
+    'linux',
+  ];
 
-  defaultPlatforms: ForgePlatform[] = ['darwin', 'mas', 'win32', 'linux'];
-
-  isSupportedOnCurrentPlatform(): boolean {
+  public isSupportedOnCurrentPlatform(): boolean {
     return true;
   }
 
-  async make({
+  public async make({
     dir,
     makeDir,
     appName,
@@ -37,9 +41,8 @@ export default class DeterministicZipMaker extends MakerBase<DeterministicZipMak
     );
 
     await this.ensureFile(destinationPath);
-    await createZip(sourceDirectory, destinationPath);
 
-    return [destinationPath];
+    return await createZip(sourceDirectory, destinationPath);
   }
 }
 

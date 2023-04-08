@@ -1,7 +1,13 @@
 import JSZip from 'jszip';
 import { join } from 'node:path';
-import { opendir, stat } from 'node:fs/promises';
+import { opendir } from 'node:fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
+
+function getArchivePath(path: string, rootDirectory: string): string {
+  const archivePath = path.replace(rootDirectory, '').replaceAll('\\', '/');
+
+  return archivePath.charAt(0) === '/' ? archivePath.substring(1) : archivePath;
+}
 
 async function addDirToZip(
   zip: JSZip,
@@ -12,16 +18,21 @@ async function addDirToZip(
 
   for await (const dirent of dir) {
     const fullpath = join(sourceDirectory, dirent.name);
+    const archivePath = getArchivePath(fullpath, rootDirectory);
 
     if (dirent.isFile()) {
       const fileReadStream = createReadStream(fullpath);
-      const fileStats = await stat(fullpath);
-      const archivePath = fullpath.replace(rootDirectory, '');
 
       zip.file(archivePath, fileReadStream, {
-        date: new Date(fileStats.mtimeMs),
+        date: new Date(0),
       });
     } else if (dirent.isDirectory()) {
+
+      zip.file(archivePath, null, {
+        dir: true,
+        date: new Date(0),
+      });
+
       await addDirToZip(zip, fullpath, rootDirectory);
     } else {
       throw new Error(`Unsupported file type: ${dirent.name}`);
@@ -29,14 +40,7 @@ async function addDirToZip(
   }
 }
 
-export async function createZip(
-  sourceDirectory: string,
-  destinationPath: string,
-): Promise<void> {
-  const zip = new JSZip();
-
-  await addDirToZip(zip, sourceDirectory, sourceDirectory);
-
+function writeZipToFile(zip: JSZip, destinationPath: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     zip
       .generateNodeStream({
@@ -55,4 +59,17 @@ export async function createZip(
         reject(error);
       });
   });
+}
+
+export async function createZip(
+  sourceDirectory: string,
+  destinationPath: string,
+): Promise<string[]> {
+  const zip = new JSZip();
+
+  await addDirToZip(zip, sourceDirectory, sourceDirectory);
+
+  await writeZipToFile(zip, destinationPath);
+
+  return [destinationPath];
 }

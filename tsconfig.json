@@ -1,26 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "allowJs": true,
+    "target": "ES2019",
     "module": "commonjs",
-    "jsx": "react-jsx",
+    "declaration": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "noImplicitAny": true,
     "sourceMap": true,
     "strict": true,
-    "baseUrl": ".",
     "outDir": "dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
     "preserveConstEnums": true,
-    "paths": {
-      "*": [
-        "node_modules/*"
-      ]
-    }
+    "esModuleInterop": true,
+    "lib": [
+      "ES2021"
+    ]
   },
-  "include": [
-    "src/**/*"
-  ]
+  "files": [
+    "./src/maker.ts"
+  ],
 }
