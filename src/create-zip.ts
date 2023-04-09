@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import { join } from 'node:path';
-import { opendir } from 'node:fs/promises';
+import { opendir, stat } from 'node:fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 
 function getArchivePath(path: string, rootDirectory: string): string {
@@ -19,15 +19,15 @@ async function addDirToZip(
   for await (const dirent of dir) {
     const fullpath = join(sourceDirectory, dirent.name);
     const archivePath = getArchivePath(fullpath, rootDirectory);
+    const fileStats = await stat(fullpath);
 
-    if (dirent.isFile()) {
+    if (fileStats.isFile()) {
       const fileReadStream = createReadStream(fullpath);
 
       zip.file(archivePath, fileReadStream, {
         date: new Date(0),
       });
-    } else if (dirent.isDirectory()) {
-
+    } else if (fileStats.isDirectory()) {
       zip.file(archivePath, null, {
         dir: true,
         date: new Date(0),
