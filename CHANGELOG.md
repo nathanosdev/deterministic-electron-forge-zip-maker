@@ -1,3 +1,9 @@
+## 0.1.3 (2023-04-11)
+
+### Fix
+
+- mac os archive and enable compression
+
 ## 0.1.2 (2023-04-09)
 
 ### Fix
