@@ -22,15 +22,10 @@ export default class DeterministicZipMaker extends MakerBase<DeterministicZipMak
   public async make({
     dir,
     makeDir,
-    appName,
     packageJSON,
     targetArch,
     targetPlatform,
   }: MakerOptions): Promise<string[]> {
-    const sourceDirectory = ['darwin', 'mas'].includes(targetPlatform)
-      ? path.resolve(dir, `${appName}.app`)
-      : dir;
-
     const zipName = `${path.basename(dir)}-${packageJSON.version}.zip`;
     const destinationPath = path.resolve(
       makeDir,
@@ -42,7 +37,7 @@ export default class DeterministicZipMaker extends MakerBase<DeterministicZipMak
 
     await this.ensureFile(destinationPath);
 
-    return await createZip(sourceDirectory, destinationPath);
+    return await createZip(dir, destinationPath);
   }
 }
 
